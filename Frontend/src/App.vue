@@ -55,10 +55,13 @@ export default {
 
       for (let i = 0; i < tamanhoMatriz; i++) {
         linha["X" + i] = "0"
+        // /linha["X" + i].numerico = true
       }
       console.log(linha);
 
       for (let i = 0; i < tamanhoMatriz; i++) {
+        //let linha_aux = {valor: "0", editavel: true};
+        //console.log(linha_aux);
         this.itemsMatriz[i] = linha
       }
       console.log(this.itemsMatriz);
