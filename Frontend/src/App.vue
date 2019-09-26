@@ -24,7 +24,12 @@
         <b-col ref="linhaMatriz">
           <matriz></matriz>
         </b-col>
+        <b-col cols="1">
+          <b-button variant="outline-primary" @click="calcular">Calcular</b-button>
+        </b-col>
       </b-row>
+
+
     </b-container>
   </div>
 </template>
@@ -51,37 +56,48 @@ export default {
       let tamanhoMatriz = this.tamanho;
 
       console.log('Tamanho da Matrix: ', tamanhoMatriz);
-      let linha = {};
 
-      for (let i = 0; i < tamanhoMatriz; i++) {
-        linha["X" + i] = "0"
-        // /linha["X" + i].numerico = true
+
+      for (let i = 1; i <= tamanhoMatriz; i++) {
+        let linha = [];
+        for (let j = 1; j <= tamanhoMatriz; j++) {
+          let ref = i + '' + j
+          linha.push({nome: ref, valor: 0})
+        }
+        this.itemsMatriz.push(linha)
       }
-      console.log(linha);
+      //console.log(this.itemsMatriz);
 
-      for (let i = 0; i < tamanhoMatriz; i++) {
-        //let linha_aux = {valor: "0", editavel: true};
-        //console.log(linha_aux);
-        this.itemsMatriz[i] = linha
-      }
-      console.log(this.itemsMatriz);
-
-
-      let matrizClass = Vue.extend(Matriz)
+      let matrizClass = Vue.extend(Matriz);
       let instanciaMatriz = new matrizClass({
-        propsData: {items: this.itemsMatriz}
-      })
-      instanciaMatriz.$mount()
+        propsData: {items: this.itemsMatriz, tamanho: tamanhoMatriz }
+      });
+      instanciaMatriz.$mount();
 
-      let rowTabs = this.$refs.linhaMatriz
+      let rowTabs = this.$refs.linhaMatriz;
 
       if (rowTabs.childNodes.length > 0) {
         rowTabs.replaceChild(instanciaMatriz.$el, rowTabs.firstChild)
       } else {
         rowTabs.appendChild(instanciaMatriz.$el)
       }
-
+      // console.log(instanciaMatriz)
+    },
+    calcular() {
+      let matriz = pegarValores();
+      this.axios.post('http://matheusmuriel.pythonanywhere.com/gauss/', matriz)
+        .then((response) => {
+          let dados = response.data;
+          console.log(dados);
+          // this.processarResposta(dados)
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
     }
+  },
+  pegarValores() {
+
   }
 }
 </script>

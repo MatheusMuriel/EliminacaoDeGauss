@@ -6,7 +6,8 @@
       :items="items"
       :fields="fields">
       <template v-slot:cell()="row">
-        <b-input></b-input>
+        <h5>{{row.value.nome}}</h5>
+        <b-input type="number" v-model="valores[Number(row.value.nome)]" model="0" @input="updateModel({$event})"></b-input>
       </template>
     </b-table>
   </div>
@@ -15,10 +16,16 @@
   export default {
     data () {
       return {
-        fields: []
+        fields: [],
+        valores: [],
       }
     },
-    props: ['items']
+    props: ['items','tamanho'],
+    methods: {
+      updateModel (e) {
+        console.log(e,this.valores)
+      }
+    }
   }
 </script>
 <style>
