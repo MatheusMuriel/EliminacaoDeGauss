@@ -7,7 +7,7 @@
       :fields="fields">
       <template v-slot:cell()="row">
         <h5>{{row.value.nome}}</h5>
-        <b-input type="number" v-model="valores[Number(row.value.nome)]" model="0" @input="updateModel({$event})"></b-input>
+        <b-input type="number" value="0" v-model="valores[row.value.nome]" @input="updateModel()"></b-input>
       </template>
     </b-table>
   </div>
@@ -20,10 +20,30 @@
         valores: [],
       }
     },
+    beforeMount (){
+      let vm = this
+      let tamanho = parseInt(vm._props.tamanho, 10)
+      for (let i = 1; i <= tamanho; i++) {
+        for (let j = 1; j <= tamanho; j++) {
+          let refStr = i + "" + j
+          let ref = parseInt(refStr, 10)
+          this.valores[ref] = 0
+        }
+      }
+
+    },
     props: ['items','tamanho'],
     methods: {
       updateModel (e) {
-        console.log(e,this.valores)
+
+        function printValor(elemento, index, array) {
+          console.log(index + " => " + elemento)
+        }
+
+        this.valores.forEach(printValor)
+      },
+      getValores () {
+
       }
     }
   }
