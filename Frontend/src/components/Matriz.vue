@@ -7,7 +7,7 @@
       :fields="fields">
       <template v-slot:cell()="row">
         <h5>{{row.value.nome}}</h5>
-        <b-input type="number" value="0" v-model="valores[row.value.nome]" @input="updateModel()"></b-input>
+        <b-input type="number" v-model="valores[row.value.nome]"></b-input>
       </template>
     </b-table>
   </div>
@@ -18,6 +18,8 @@
       return {
         fields: [],
         valores: [],
+        stringJsonMatriz: '',
+        mapatriz: '',
       }
     },
     beforeMount (){
@@ -37,29 +39,12 @@
     },
     props: ['items','tamanho'],
     methods: {
-      updateModel (e) {
-        function printValor(elemento, index, array) {
-          // console.log(index + " => " + elemento)
-        }
-        this.valores.forEach(printValor)
-        // console.log(this.valores)
-      },
       getValores () {
-        console.log('Evento getValores')
-
         let mapaMatriz = new Map()
         this.valores.forEach((value, index) => {
           if (value !== undefined) mapaMatriz.set(index, value)
         })
-        console.log('Mapa ', mapaMatriz)
-
-        let jsonMatriz = JSON.stringify(mapaMatriz)
-        console.log('Json ', jsonMatriz)
-
-        this.$emit('calcular', jsonMatriz)
-
-        // let desJson = JSON.parse(jsonMatriz)
-        // console.log('DesJson ', desJson)
+        this.mapatriz = mapaMatriz
       }
     }
   }

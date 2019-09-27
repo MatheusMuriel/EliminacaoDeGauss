@@ -25,7 +25,7 @@
           <matriz></matriz>
         </b-col>
         <b-col cols="1">
-          <b-button variant="outline-primary" @click="calcular">Calcular</b-button>
+          <b-button variant="outline-primary" @click="pegarDados">Calcular</b-button>
         </b-col>
       </b-row>
 
@@ -52,12 +52,12 @@ export default {
       instanciaMatriz: '',
     }
   },
+  mounted () {
+    // this.$on('valoresACalcular', this.calcular)
+  },
   methods: {
-    gerarMatriz() {
+    gerarMatriz () {
       let tamanhoMatriz = this.tamanho;
-
-      console.log('Tamanho da Matrix: ', tamanhoMatriz);
-
 
       for (let i = 1; i <= tamanhoMatriz; i++) {
         let linha = [];
@@ -85,22 +85,63 @@ export default {
       // console.log(instanciaMatriz)
       this.instanciaMatriz = instanciaMatriz
     },
-    calcular() {
-      let matriz = this.instanciaMatriz.$emit('pegarValores')
+    pegarDados () {
+      this.instanciaMatriz.$emit('pegarValores')
+      let mapatriz = this.instanciaMatriz.$data.mapatriz
+      this.calcular(mapatriz)
+    },
+    calcular (mapatriz) {
 
-      this.axios.post('http://matheusmuriel.pythonanywhere.com/gauss/', matriz)
+      function itemMapToObj(value, key, object){
+        object[key] = value
+      }
+
+      let obMapatriz = {}
+      mapatriz.forEach((value, key) => itemMapToObj(value, key, obMapatriz))
+
+      let strMapatriz = JSON.stringify(obMapatriz)
+
+      this.axios.post('http://localhost:8000/gauss/', strMapatriz)
         .then((response) => {
           let dados = response.data;
-          console.log(dados);
-          // this.processarResposta(dados)
+          this.processarResposta(dados)
         })
         .catch(function (error) {
           console.log(error)
         })
-    }
-  },
-  pegarValores() {
+    },
+    processarResposta (dados) {
+      let itens = dados.split("§§§")
+      // console.log(itens)
 
+      let matriz_x = itens[0]
+      let strPassos = itens[1]
+
+      let passos_iteracoes = strPassos.split("$$$")
+      passos_iteracoes.shift()
+      // console.log(passos_iteracoes)
+
+      let passos = new Map()
+
+      passos_iteracoes.forEach((strPasso) => {
+        let arrPasso = strPasso.split("###")
+        let numPasso = arrPasso[0]
+        // console.log( numPasso )
+        let strAB = arrPasso[1].split("&&&")
+
+        let strA = strAB[0]
+        let arrA = JSON.parse(strA)
+        // console.log(arrA)
+
+        let strB = strAB[1]
+        let arrB = JSON.parse(strB)
+        // console.log(arrB)
+
+        passos.set(numPasso, [arrA, arrB])
+      })
+
+      console.log(passos)
+    }
   }
 }
 </script>
