@@ -32,18 +32,34 @@
       }
 
     },
+    mounted () {
+      this.$on('pegarValores', this.getValores)
+    },
     props: ['items','tamanho'],
     methods: {
       updateModel (e) {
-
         function printValor(elemento, index, array) {
-          console.log(index + " => " + elemento)
+          // console.log(index + " => " + elemento)
         }
-
         this.valores.forEach(printValor)
+        // console.log(this.valores)
       },
       getValores () {
+        console.log('Evento getValores')
 
+        let mapaMatriz = new Map()
+        this.valores.forEach((value, index) => {
+          if (value !== undefined) mapaMatriz.set(index, value)
+        })
+        console.log('Mapa ', mapaMatriz)
+
+        let jsonMatriz = JSON.stringify(mapaMatriz)
+        console.log('Json ', jsonMatriz)
+
+        this.$emit('calcular', jsonMatriz)
+
+        // let desJson = JSON.parse(jsonMatriz)
+        // console.log('DesJson ', desJson)
       }
     }
   }

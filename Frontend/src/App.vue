@@ -48,7 +48,8 @@ export default {
   data () {
     return {
       tamanho: '3',
-      itemsMatriz: []
+      itemsMatriz: [],
+      instanciaMatriz: '',
     }
   },
   methods: {
@@ -82,9 +83,11 @@ export default {
         rowTabs.appendChild(instanciaMatriz.$el)
       }
       // console.log(instanciaMatriz)
+      this.instanciaMatriz = instanciaMatriz
     },
     calcular() {
-      let matriz = pegarValores();
+      let matriz = this.instanciaMatriz.$emit('pegarValores')
+
       this.axios.post('http://matheusmuriel.pythonanywhere.com/gauss/', matriz)
         .then((response) => {
           let dados = response.data;
