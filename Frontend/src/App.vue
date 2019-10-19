@@ -6,7 +6,7 @@
         <b-input-group prepend="Tamanho:" class="mt-3 inputCamp">
           <b-form-input v-model="tamanho" placeholder="Ex: 2" type="number"></b-form-input>
           <b-input-group-append>
-            <b-button variant="outline-primary" @click="gerarMatriz">Gerar Matriz</b-button>
+            <b-button variant="outline-primary" @click="gerarMatrizVazia">Gerar Matriz</b-button>
           </b-input-group-append>
         </b-input-group>
       </b-row>
@@ -56,31 +56,53 @@ export default {
       instanciaMatriz: ''
     }
   },
-  mounted () {
-    // this.$on('valoresACalcular', this.calcular)
-  },
   methods: {
     testeresponse () {
       let respontaRequestFixa = '$$$1###[[1.0, 2.0, 3.0], [0.0, -3.0, -4.0], [3.0, 2.0, 1.0]]&&&[9.0, -11.0, 6.0]$$$2###[[1.0, 2.0, 3.0], [0.0, -3.0, -4.0], [0.0, -4.0, -8.0]]&&&[9.0, -11.0, -21.0]$$$3###[[1.0, 2.0, 3.0], [0.0, -3.0, -4.0], [0.0, 0.0, -2.666666666666667]]&&&[9.0, -11.0, -6.333333333333334]§§§[0.875, 0.5, 2.375]§§§[[1, 0, 0], [2, 1, 0], [3, 1, 1]]§§§[[1.0, 2.0, 3.0], [0.0, -3.0, -4.0], [0.0, 0.0, -2.666666666666667]]'
 
       this.processarResposta(respontaRequestFixa)
     },
-    gerarMatriz () {
+    gerarMatrizVazia () {
       let tamanhoMatriz = Number(this.tamanho)
 
+      let valores = []
       for (let i = 1; i <= tamanhoMatriz; i++) {
         let linha = [];
         for (let j = 1; j <= tamanhoMatriz+1; j++) {
           let ref = i + '' + j
           linha.push({nome: ref, valor: 0})
         }
-        this.itemsMatriz.push(linha)
+        valores.push(linha)
       }
-      // console.log(this.itemsMatriz);
 
+      this.instanciarMatriz(valores, tamanhoMatriz)
+    },
+    gerarMatrizComValores (valoresA, valoresB, tamanho) {
+      let tamanhoMatriz = Number(tamanho)
+
+      let valoresNovos = []
+      for (let i = 1; i < tamanhoMatriz+1; i++) {
+        let linha = [];
+        for (let j = 1; j < tamanhoMatriz+1; j++) {
+          let ref = i + '' + j
+          let valor = valoresA[i-1][j-1]
+          linha.push({nome: ref, valor: valor})
+        }
+        let refB = i + '' + (tamanhoMatriz+1)
+        console.log(refB)
+        let valorB = valoresB[i-1]
+        console.log(valorB)
+        linha.push({nome: refB, valor: valorB})
+        
+        valoresNovos.push(linha)
+      }
+      console.log(valoresNovos)
+      this.instanciarMatriz(valoresNovos, tamanhoMatriz)
+    },
+    instanciarMatriz (valores, tamanho) {
       let matrizClass = Vue.extend(Matriz);
       let instanciaMatriz = new matrizClass({
-        propsData: {items: this.itemsMatriz, tamanho: tamanhoMatriz}
+        propsData: {items: valores, tamanho: tamanho}
       });
       instanciaMatriz.$mount();
 
@@ -91,10 +113,7 @@ export default {
       } else {
         rowTabs.appendChild(instanciaMatriz.$el)
       }
-      // console.log(instanciaMatriz)
       this.instanciaMatriz = instanciaMatriz
-
-      this.gerartabNav()
     },
     pegarDados () {
       this.instanciaMatriz.$emit('pegarValores')
@@ -124,13 +143,14 @@ export default {
         })
     },
     exibirMatrizLU () {
-      // TODO
+      let botaoExibir = this.$refs.btnLU;
+
+      botaoExibir.setAttribute('style', 'display: auto')
+
     },
     processarResposta (dados) {
       // str_passos + "§§§" + matriz_x + "§§§" + matriz_l + "§§§" + matriz_u
       let itens = dados.split("§§§")
-
-      console.table(itens)
 
       let strPassos = itens[0]
       let strMatrizX = itens[1]
@@ -161,14 +181,29 @@ export default {
       let matrizL = JSON.parse(strMatrizL)
       let matrizU = JSON.parse(strMatrizU)
 
+      this.exibirResposta(passos, matrizX, matrizL, matrizU)
+    },
+    exibirResposta (passos, matrizX, matrizL, matrizU) {
+      /**
+      console.table(passos)
+      console.table(matrizX)
+      console.table(matrizL)
+      console.table(matrizU)
+      */
 
-      console.log('Passos ')
-      console.log(passos)
+      let maxKey = 0
 
-      console.log('Matriz X', matrizX)
+      for (let [k, v] of passos) {
+        maxKey = k > maxKey ? k : maxKey
+      }
 
-      console.log('Matriz L', matrizL)
-      console.log('Matriz U', matrizU)
+      let matrizResultado = passos.get(maxKey)
+
+      let matrizA = matrizResultado[0]
+      let matrizB = matrizResultado[1]
+
+      this.gerarMatrizComValores(matrizA, matrizB, 3)
+      this.exibirMatrizLU()
     }
   }
 }
