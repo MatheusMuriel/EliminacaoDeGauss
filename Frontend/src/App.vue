@@ -1,8 +1,5 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png">
-    <HelloWorld/>
-
     <b-container>
 
       <b-row>
@@ -25,7 +22,15 @@
           <matriz></matriz>
         </b-col>
         <b-col cols="1">
-          <b-button variant="outline-primary" @click="pegarDados">Calcular</b-button>
+          
+          <b-row>
+            <b-button variant="outline-primary" @click="pegarDados">Calcular</b-button>
+          </b-row>
+
+          <b-row>
+            <b-button style="display: none" ref="btnLU" variant="outline-primary" @click="exibirMatrizLU">L U</b-button>
+          </b-row>
+
         </b-col>
       </b-row>
 
@@ -35,21 +40,19 @@
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld'
 import Matriz from './components/Matriz'
 import Vue from 'vue'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld,
     Matriz
   },
   data () {
     return {
       tamanho: '3',
       itemsMatriz: [],
-      instanciaMatriz: '',
+      instanciaMatriz: ''
     }
   },
   mounted () {
@@ -57,21 +60,21 @@ export default {
   },
   methods: {
     gerarMatriz () {
-      let tamanhoMatriz = this.tamanho;
+      let tamanhoMatriz = Number(this.tamanho)
 
       for (let i = 1; i <= tamanhoMatriz; i++) {
         let linha = [];
-        for (let j = 1; j <= tamanhoMatriz; j++) {
+        for (let j = 1; j <= tamanhoMatriz+1; j++) {
           let ref = i + '' + j
           linha.push({nome: ref, valor: 0})
         }
         this.itemsMatriz.push(linha)
       }
-      //console.log(this.itemsMatriz);
+      // console.log(this.itemsMatriz);
 
       let matrizClass = Vue.extend(Matriz);
       let instanciaMatriz = new matrizClass({
-        propsData: {items: this.itemsMatriz, tamanho: tamanhoMatriz }
+        propsData: {items: this.itemsMatriz, tamanho: tamanhoMatriz}
       });
       instanciaMatriz.$mount();
 
@@ -84,6 +87,20 @@ export default {
       }
       // console.log(instanciaMatriz)
       this.instanciaMatriz = instanciaMatriz
+
+      this.gerartabNav()
+    },
+    gerartabNav () {
+
+      let navMatrizClass = Vue.extend(NavMatriz);
+      let instanciaNavMatriz = new navMatrizClass({
+        propsData: {listaItens: this.itemsMatriz}
+      });
+      instanciaNavMatriz.$mount();
+
+      let rowNav = this.$refs.nav;
+
+      rowNav.appendChild(instanciaNavMatriz.$el)
     },
     pegarDados () {
       this.instanciaMatriz.$emit('pegarValores')
@@ -101,6 +118,8 @@ export default {
 
       let strMapatriz = JSON.stringify(obMapatriz)
 
+      console.log(strMapatriz)
+
       this.axios.post('http://localhost:8000/gauss/', strMapatriz)
         .then((response) => {
           let dados = response.data;
@@ -112,35 +131,29 @@ export default {
     },
     processarResposta (dados) {
       let itens = dados.split("§§§")
-      // console.log(itens)
 
-      let matriz_x = itens[0]
+      let matriz_x = JSON.parse(itens[0])
       let strPassos = itens[1]
 
       let passos_iteracoes = strPassos.split("$$$")
       passos_iteracoes.shift()
-      // console.log(passos_iteracoes)
 
       let passos = new Map()
 
       passos_iteracoes.forEach((strPasso) => {
         let arrPasso = strPasso.split("###")
         let numPasso = arrPasso[0]
-        // console.log( numPasso )
         let strAB = arrPasso[1].split("&&&")
 
         let strA = strAB[0]
         let arrA = JSON.parse(strA)
-        // console.log(arrA)
 
         let strB = strAB[1]
         let arrB = JSON.parse(strB)
-        // console.log(arrB)
 
         passos.set(numPasso, [arrA, arrB])
       })
-
-      console.log(passos)
+      console.log(matriz_x, passos)
     }
   }
 }
