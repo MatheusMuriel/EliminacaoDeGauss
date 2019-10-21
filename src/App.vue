@@ -3,7 +3,14 @@
     <b-container>
 
       <b-row class="line-padin2">
-        <b-col><h2>Metodo da Eliminação de Gauss</h2></b-col>
+        <b-col>
+          <b-row class="justify-content-md-center">
+            <h2>Metodo da Eliminação de Gauss</h2>
+          </b-row>
+          <b-row class="justify-content-md-center">
+            <b-img fuild rounded="circle" class="img-gauss" src="../static/images/gauss.jpg"></b-img>
+          </b-row>
+        </b-col>
       </b-row>
 
       <b-row>
@@ -179,7 +186,7 @@ export default {
         if (valoresB) {
           let refB = i + '' + (tamanhoMatriz+1)
           let valorB = valoresB[i-1]
-          valorB = valorB.toFixed(this.casasDecimais)
+          valorB = Number.isInteger(valorB) ? valorB : valorB.toPrecision(this.casasDecimais)
           linha.push({nome: refB, valor: valorB})
         }
         valoresNovos.push(linha)
@@ -360,5 +367,9 @@ export default {
 .line-padin2 {
   padding: 10px;
   padding-bottom: 30px;
+}
+.img-gauss {
+  width: 15%;
+  height: 15%;
 }
 </style>
