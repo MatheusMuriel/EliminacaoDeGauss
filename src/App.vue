@@ -2,6 +2,10 @@
   <div id="app">
     <b-container>
 
+      <b-row class="line-padin2">
+        <b-col><h2>Metodo da Eliminação de Gauss</h2></b-col>
+      </b-row>
+
       <b-row>
         <b-input-group prepend="Tamanho:" class="mt-3 inputCamp">
           <b-form-input v-model="tamanho" placeholder="Ex: 2" type="number"></b-form-input>
@@ -12,15 +16,15 @@
       </b-row>
 
       <b-row>
-        <b-col>
-          <h5 v-if="isResultado">{{tituloResultado}}</h5>
+        <b-col class="linha-padin">
+          <h3 v-if="isResultado">{{tituloResultado}}</h3>
           <h5 v-else>Tamanho: {{ tamanho }} X {{ tamanho }}</h5>
         </b-col>
       </b-row>
       
-      <b-row v-if="isResultado">
+      <b-row v-if="isResultado"  class="linha-padin">
         <b-col>
-          <h6>Passo {{passo}}/{{totalDePassos}}</h6>
+          <h5>Passo {{passo}}/{{totalDePassos}}</h5>
         </b-col>
 
         <b-row>
@@ -48,7 +52,7 @@
         </b-col>
       </b-row>
 
-      <b-row>
+      <b-row  class="linha-padin">
         <b-col ref="linhaMatriz">
           <matriz></matriz>
         </b-col>
@@ -62,7 +66,7 @@
         </b-col>
       </b-row>
 
-      <b-row>
+      <b-row class="linha-padin">
         <b-col>
           <b-row>
             <b-col>
@@ -79,7 +83,7 @@
         <b-col>
           <b-row>
             <b-col>
-              <h5>{{tituloU}}</h5>
+              <h5 >{{tituloU}}</h5>
             </b-col>
           </b-row>
           <b-row>
@@ -122,7 +126,7 @@ export default {
       passo: 0,
       totalDePassos: 0,
       todosOsPassos: [],
-      exibirLU: true,
+      exibirLU: false,
       tituloL: '',
       tituloU: '',
       casasDecimais: 3,
@@ -148,6 +152,17 @@ export default {
       }
 
       this.instanciarMatriz(valores, tamanhoMatriz)
+      this.isResultado = false
+      this.tituloL = ''
+      this.tituloU = ''
+      let rowL = this.$refs.linhaMatrizL;
+      let rowU = this.$refs.linhaMatrizU;
+      if (rowL.hasChildNodes()) {
+        rowL.removeChild(rowL.childNodes[0]);
+      }
+      if (rowU.hasChildNodes()) {
+        rowU.removeChild(rowU.childNodes[0]);
+      }
     },
     gerarMatrizComValores (valoresA, valoresB, tamanho) {
       let tamanhoMatriz = Number(tamanho)
@@ -339,7 +354,11 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
-.matriz {
-  margin: 5px;
+.linha-padin {
+  padding: 10px;
+}
+.line-padin2 {
+  padding: 10px;
+  padding-bottom: 30px;
 }
 </style>
