@@ -52,7 +52,6 @@ export default {
   data () {
     return {
       tamanho: '3',
-      itemsMatriz: [],
       instanciaMatriz: ''
     }
   },
