@@ -25,7 +25,7 @@
           
           <b-row>
             <b-button variant="outline-primary" @click="pegarDados">Calcular</b-button>
-            <b-button variant="outline-primary" @click="testeresponse">Calcular-dev</b-button>
+            <b-button v-if="isDev" variant="outline-primary" @click="testeresponse">Calcular-dev</b-button>
           </b-row>
 
           <b-row>
@@ -49,10 +49,23 @@ export default {
   components: {
     Matriz
   },
+  created () {
+
+    let isDev = process.env.NODE_ENV === 'development'
+    
+    let prefixo = 'http://'
+    let endereco = isDev ? 'localhost:8000' : 'matheusmuriel.pythonanywhere.com'
+    let sufixo = '/gauss/'
+
+    this.isDev = isDev
+    this.urlApi = prefixo + endereco + sufixo
+  },
   data () {
     return {
       tamanho: '3',
-      instanciaMatriz: ''
+      instanciaMatriz: '',
+      urlApi: '',
+      isDev: true
     }
   },
   methods: {
@@ -132,7 +145,7 @@ export default {
 
       console.log(strMapatriz)
 
-      this.axios.post('http://localhost:8000/gauss/', strMapatriz)
+      this.axios.post(this.urlApi, strMapatriz)
         .then((response) => {
           let dados = response.data;
           this.processarResposta(dados)
