@@ -13,7 +13,38 @@
 
       <b-row>
         <b-col>
-          <div class="mt-2">Tamanho: {{ tamanho }} X {{ tamanho }}</div>
+          <h5 v-if="isResultado">{{tituloResultado}}</h5>
+          <h5 v-else>Tamanho: {{ tamanho }} X {{ tamanho }}</h5>
+        </b-col>
+      </b-row>
+      
+      <b-row v-if="isResultado">
+        <b-col>
+          <h6>Passo {{passo}}/{{totalDePassos}}</h6>
+        </b-col>
+
+        <b-row>
+          <b-col>
+            <div v-if="passo > 1">
+              <b-button @click="anteriorPasso">Anterior</b-button>
+            </div>
+            <div v-else>
+              <b-button disabled @click="anteriorPasso">Anterior</b-button>
+            </div>  
+          </b-col>
+
+          <b-col>
+            <div v-if="passo < totalDePassos">
+              <b-button @click="proximoPasso">Proximo</b-button>
+            </div>
+            <div v-else>
+              <b-button disabled @click="proximoPasso">Proximo</b-button>
+            </div>
+          </b-col>
+        </b-row>
+
+        <b-col>
+          <b-button ref="btnLU" variant="outline-primary" @click="exibirMatrizLU">Exibir matriz L U</b-button>
         </b-col>
       </b-row>
 
@@ -28,13 +59,36 @@
             <b-button v-if="isDev" variant="outline-primary" @click="testeresponse">Calcular-dev</b-button>
           </b-row>
 
-          <b-row>
-            <b-button style="display: none" ref="btnLU" variant="outline-primary" @click="exibirMatrizLU">L U</b-button>
-          </b-row>
-
         </b-col>
       </b-row>
 
+      <b-row>
+        <b-col>
+          <b-row>
+            <b-col>
+              <h5>{{tituloL}}</h5>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col ref="linhaMatrizL">
+              <matriz class="matriz"></matriz>
+            </b-col>
+          </b-row>
+        </b-col>
+
+        <b-col>
+          <b-row>
+            <b-col>
+              <h5>{{tituloU}}</h5>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col ref="linhaMatrizU">
+              <matriz></matriz>
+            </b-col>
+          </b-row>
+        </b-col>
+      </b-row>
 
     </b-container>
   </div>
@@ -62,7 +116,16 @@ export default {
       tamanho: '3',
       instanciaMatriz: '',
       urlApi: '',
-      isDev: true
+      isDev: true,
+      isResultado: false,
+      tituloResultado: '',
+      passo: 0,
+      totalDePassos: 0,
+      todosOsPassos: [],
+      exibirLU: true,
+      tituloL: '',
+      tituloU: '',
+      casasDecimais: 3,
     }
   },
   methods: {
@@ -95,18 +158,18 @@ export default {
         for (let j = 1; j < tamanhoMatriz+1; j++) {
           let ref = i + '' + j
           let valor = valoresA[i-1][j-1]
+          valor = Number.isInteger(valor) ? valor : valor.toPrecision(this.casasDecimais)
           linha.push({nome: ref, valor: valor})
         }
-        let refB = i + '' + (tamanhoMatriz+1)
-        console.log(refB)
-        let valorB = valoresB[i-1]
-        console.log(valorB)
-        linha.push({nome: refB, valor: valorB})
-        
+        if (valoresB) {
+          let refB = i + '' + (tamanhoMatriz+1)
+          let valorB = valoresB[i-1]
+          valorB = valorB.toFixed(this.casasDecimais)
+          linha.push({nome: refB, valor: valorB})
+        }
         valoresNovos.push(linha)
       }
-      console.log(valoresNovos)
-      this.instanciarMatriz(valoresNovos, tamanhoMatriz)
+      return valoresNovos
     },
     instanciarMatriz (valores, tamanho) {
       let matrizClass = Vue.extend(Matriz);
@@ -140,8 +203,6 @@ export default {
 
       let strMapatriz = JSON.stringify(obMapatriz)
 
-      console.log(strMapatriz)
-
       this.axios.post(this.urlApi + '/gauss/', strMapatriz)
         .then((response) => {
           let dados = response.data;
@@ -152,10 +213,38 @@ export default {
         })
     },
     exibirMatrizLU () {
-      let botaoExibir = this.$refs.btnLU;
+      this.exibirLU = true
 
-      botaoExibir.setAttribute('style', 'display: auto')
+      let matL = this.gerarMatrizComValores(this.matrizL, null, this.matrizL.length)
+      let matU = this.gerarMatrizComValores(this.matrizU, null, this.matrizL.length)
 
+      let matrizClass = Vue.extend(Matriz);
+      let instanciaMatrizL = new matrizClass({
+        propsData: {items: matL, tamanho: this.matrizL.length}
+      });
+      let instanciaMatrizU = new matrizClass({
+        propsData: {items: matU, tamanho: this.matrizU.length}
+      });
+
+      instanciaMatrizL.$mount();
+      instanciaMatrizU.$mount();
+
+      let rowL = this.$refs.linhaMatrizL;
+      let rowU = this.$refs.linhaMatrizU;
+
+      if (rowL.childNodes.length > 0) {
+        rowL.replaceChild(instanciaMatrizL.$el, rowL.firstChild)
+      } else {
+        rowL.appendChild(instanciaMatrizL.$el)
+      }
+      if (rowU.childNodes.length > 0) {
+        rowU.replaceChild(instanciaMatrizU.$el, rowU.firstChild)
+      } else {
+        rowU.appendChild(instanciaMatrizU.$el)
+      }
+
+      this.tituloL = 'Matriz L'
+      this.tituloU = 'Matriz U'
     },
     processarResposta (dados) {
       // str_passos + "§§§" + matriz_x + "§§§" + matriz_l + "§§§" + matriz_u
@@ -193,26 +282,49 @@ export default {
       this.exibirResposta(passos, matrizX, matrizL, matrizU)
     },
     exibirResposta (passos, matrizX, matrizL, matrizU) {
-      /**
-      console.table(passos)
-      console.table(matrizX)
-      console.table(matrizL)
-      console.table(matrizU)
-      */
-
       let maxKey = 0
-
       for (let [k, v] of passos) {
         maxKey = k > maxKey ? k : maxKey
       }
 
-      let matrizResultado = passos.get(maxKey)
+      this.totalDePassos = maxKey
+      this.passo = maxKey
 
+      this.todosOsPassos = passos
+
+      this.isResultado = true
+
+      this.matrizL = matrizL
+      this.matrizU = matrizU
+
+      this.tituloResultado = 'Resultado'
+
+      let matrizResultado = passos.get(maxKey)
       let matrizA = matrizResultado[0]
       let matrizB = matrizResultado[1]
 
-      this.gerarMatrizComValores(matrizA, matrizB, 3)
-      this.exibirMatrizLU()
+      let m = this.gerarMatrizComValores(matrizA, matrizB, 3)
+      this.instanciarMatriz(m, m.length)
+    },
+    proximoPasso () {
+      if (this.passo < this.totalDePassos) {
+        let passo = Number(this.passo) + 1
+        this.trocaPasso(passo)
+      }
+    },
+    anteriorPasso () {
+      if (this.passo > 1) {
+        let passo = Number(this.passo) - 1
+        this.trocaPasso(passo)
+      }
+    },
+    trocaPasso (passo) {
+      let proximaMatriz = this.todosOsPassos.get(String(passo))
+      let matrizA = proximaMatriz[0]
+      let matrizB = proximaMatriz[1]
+      let m = this.gerarMatrizComValores(matrizA, matrizB, matrizA.length)
+      this.instanciarMatriz(m, m.length)
+      this.passo = passo
     }
   }
 }
@@ -226,5 +338,8 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+.matriz {
+  margin: 5px;
 }
 </style>

@@ -7,7 +7,7 @@
       :items="items"
       :fields="fields">
       <template v-slot:cell()="row">
-        <b-input type="number" v-model="valores[row.value.nome]"></b-input>
+        <b-input type="number" v-model="valores[row.value.nome]" class="input-number" step="any"></b-input>
       </template>
     </b-table>
   </div>
@@ -57,5 +57,15 @@
 <style>
   .hidden_header {
     display: none;
+  }
+  .input-number {
+    text-align: center;
+  }
+  #my-table {
+    margin: 5px;
+    padding-top: 50px;
+    padding-right: 30px;
+    padding-bottom: 50px;
+    padding-left: 80px;
   }
 </style>
