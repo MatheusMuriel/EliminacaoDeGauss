@@ -8,7 +8,7 @@
             <h2>Metodo da Eliminação de Gauss</h2>
           </b-row>
           <b-row class="justify-content-md-center">
-            <b-img fuild rounded="circle" class="img-gauss" src="../static/images/gauss.jpg"></b-img>
+            <img class="img-gauss" src="./assets/gauss.jpg"></img>
           </b-row>
         </b-col>
       </b-row>
@@ -371,5 +371,6 @@ export default {
 .img-gauss {
   width: 15%;
   height: 15%;
+  border-radius: 40%;
 }
 </style>
