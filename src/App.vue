@@ -8,7 +8,7 @@
             <h2>Metodo da Eliminação de Gauss</h2>
           </b-row>
           <b-row class="justify-content-md-center">
-            <img class="img-gauss" src="./assets/gauss.jpg"></img>
+            <img class="img-gauss" src="https://cdn.britannica.com/27/190027-050-A9A35298/Carl-Friedrich-Gauss-engraving.jpg">
           </b-row>
         </b-col>
       </b-row>
