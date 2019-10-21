@@ -50,15 +50,12 @@ export default {
     Matriz
   },
   created () {
-
     let isDev = process.env.NODE_ENV === 'development'
-    
-    let prefixo = 'http://'
-    let endereco = isDev ? 'localhost:8000' : 'matheusmuriel.pythonanywhere.com'
-    let sufixo = '/gauss/'
+
+    let endereco = isDev ? 'http://localhost:8000' : 'https://matheusmuriel.pythonanywhere.com'
 
     this.isDev = isDev
-    this.urlApi = prefixo + endereco + sufixo
+    this.urlApi = endereco
   },
   data () {
     return {
@@ -145,7 +142,7 @@ export default {
 
       console.log(strMapatriz)
 
-      this.axios.post(this.urlApi, strMapatriz)
+      this.axios.post(this.urlApi + '/gauss/', strMapatriz)
         .then((response) => {
           let dados = response.data;
           this.processarResposta(dados)
