@@ -1,21 +1,34 @@
-# eliminacao-de-gauss
+<h1 align="center">
+  <br>
+  <img src="https://cdn.britannica.com/27/190027-050-A9A35298/Carl-Friedrich-Gauss-engraving.jpg" alt="Logo" width="200" style="border-radius: 40%">
+  <br>
+  Eliminacao de Gauss
+  <br>
+</h1>
 
-> Metodo da Eliminação de Gauss
+<h4 align="center">Frontend feito em <a href="https://vuejs.org" target="_blank">VueJS</a> para a resolução de equações de sistemas lineares</h4>
 
-## Build Setup
+<h5 align="center"> Disponivel em: </br><a href="https://matheusmuriel.github.io/EliminacaoDeGauss/">MatheusMuriel.github.io/EliminacaoDeGauss</a></h5>
 
+Backend: [Djanguladora](https://github.com/MatheusMuriel/Djanguladora)
+
+## Contexto
+Trabalho da disciplina de Calculo Numérico  
+Professora: Tania Camila Kochmanscky Goulart  
+Ciência da Computação - UniFil
+
+
+
+## Como executar
+
+Para executar localmente a aplicação você vai precisar ter o [Git](https://git-scm.com) e o [NPM](http://npmjs.com) instalados em seu computador.
+
+
+## Como executar
 ``` bash
 # install dependencies
 npm install
 
 # serve with hot reload at localhost:8080
 npm run dev
-
-# build for production with minification
-npm run build
-
-# build for production and view the bundle analyzer report
-npm run build --report
 ```
-
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
