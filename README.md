@@ -36,6 +36,12 @@ npm install
 npm run dev
 ```
 
+## Bibliotecas
+
+- [VueJS](https://vuejs.org)
+- [BootstrapVue](https://Bootstrap-vue.js.org)
+
+
 ## Licença
 [GNU General Public License v3.0](LICENSE)
 
