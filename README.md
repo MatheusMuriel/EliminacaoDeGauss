@@ -17,14 +17,17 @@ Trabalho da disciplina de Calculo Numérico
 Professora: Tania Camila Kochmanscky Goulart  
 Ciência da Computação - UniFil
 
+## Estrutura do sistema
+
+Frontend: [VueJS](https://vuejs.org)  
+Backend: [Django Framework](https://www.djangoproject.com/)  
+Comunicação por meio de requisições [REST](https://pt.wikipedia.org/wiki/REST)
 
 
 ## Como executar
 
-Para executar localmente a aplicação você vai precisar ter o [Git](https://git-scm.com) e o [NPM](http://npmjs.com) instalados em seu computador.
-
-
-## Como executar
+Para executar localmente a aplicação você vai precisar ter o [Git](https://git-scm.com) e o [NPM](http://npmjs.com) instalados em seu computador.  
+Em seu terminal digite
 ``` bash
 # install dependencies
 npm install
