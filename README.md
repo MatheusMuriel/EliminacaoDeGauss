@@ -27,12 +27,14 @@ Comunicação por meio de requisições [REST](https://pt.wikipedia.org/wiki/RES
 ## Como executar
 
 Para executar localmente a aplicação você vai precisar ter o [Git](https://git-scm.com) e o [NPM](http://npmjs.com) instalados em seu computador.  
-Em seu terminal digite
+Quando executado localmente a aplicação tenta encontrar o Backend localmente. Se você não quiser executar o Backend localmente você pode fixar o parametro *this.urlApi* no arquivo App.vue
+
+Em seu terminal digite:
 ``` bash
-# install dependencies
+# Instalação das dependencias
 npm install
 
-# serve with hot reload at localhost:8080
+# Executa um servidor localmente (localhost:8080)
 npm run dev
 ```
 
@@ -40,6 +42,7 @@ npm run dev
 
 - [VueJS](https://vuejs.org)
 - [BootstrapVue](https://Bootstrap-vue.js.org)
+- [Axios](https://github.com/axios/axios)
 
 
 ## Licença
