@@ -35,3 +35,8 @@ npm install
 # serve with hot reload at localhost:8080
 npm run dev
 ```
+
+## Licença
+[GNU General Public License v3.0](LICENSE)
+
+[Matheus Muriel](https://github.com/MatheusMuriel/) - 2019
